@@ -4,10 +4,10 @@ from basis import *
 
 degree = 3 # degree of the B-spline curve
 
-with open('input.txt', 'r') as f:
+with open('star.txt', 'r') as f:
     lines = f.readlines()
 
-data_points = [(int(line.split(' ')[0]), int(line.split(' ')[1])) for line in lines]
+data_points = [(float(line.split(' ')[0]), float(line.split(' ')[1])) for line in lines]
 num_data_points = len(data_points)
 print('read data points:', data_points)
 
@@ -50,15 +50,16 @@ A = np.insert(A, -1, con2, axis=0)
 data_x = np.array([p[0] for p in data_points])
 data_y = np.array([p[1] for p in data_points])
 # insert 0 in the start and end of x and y
-data_x = np.insert(data_x, 0, 0)
+data_x = np.insert(data_x, 1, 0)
 data_x = np.insert(data_x, -1, 0)
-data_y = np.insert(data_y, 0, 0)
+data_y = np.insert(data_y, 1, 0)
 data_y = np.insert(data_y, -1, 0)
 
 # solve the linear system
 control_x = np.linalg.solve(A, data_x)
 control_y = np.linalg.solve(A, data_y)
 
+print('control points', [(control_x[i], control_y[i]) for i in range(len(control_x))] )
 
 # visualize the b-spline curve
 u = np.linspace(knot_vector[degree], knot_vector[-degree-1], 100)
