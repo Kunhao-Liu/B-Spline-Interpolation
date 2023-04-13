@@ -4,7 +4,8 @@ from basis import *
 
 degree = 3 # degree of the B-spline curve
 
-with open('star.txt', 'r') as f:
+file_name = 'whirlpool.txt'
+with open(file_name, 'r') as f:
     lines = f.readlines()
 
 data_points = [(float(line.split(' ')[0]), float(line.split(' ')[1])) for line in lines]
@@ -71,17 +72,42 @@ for i in range(len(u)):
         y[i] += control_y[j] * B(u[i], degree, j, knot_vector)
         
 import matplotlib.pyplot as plt
-plt.plot(x, y, 'r')
+plt.xlabel('x')
+plt.ylabel('y')
+
+plt.plot(x, y, 'r', label='B-spline curve')
+# add labels
+
 
 # plot the data points
 for i in range(len(data_points)):
-    plt.plot(data_points[i][0], data_points[i][1], 'bo')
+    plt.plot(data_points[i][0], data_points[i][1], 'bo', label='data points')
 
 # plot the control points
 for i in range(len(control_x)):
-    plt.plot(control_x[i], control_y[i], 'gx')
+    plt.plot(control_x[i], control_y[i], 'gx' ,label='control points')
 # connect the control points
 for i in range(len(control_x)-1):
     plt.plot([control_x[i], control_x[i+1]], [control_y[i], control_y[i+1]], 'g--')
 
+plt.axis('equal')
+handles, labels = plt.gca().get_legend_handles_labels()
+by_label = dict(zip(labels, handles))
+plt.legend(by_label.values(), by_label.keys())
 plt.show()
+
+# write the b-spline curve to a file
+with open('curve_'+file_name, 'w') as f:
+    # write the degree in a line
+    f.write(str(degree)+'\n')
+    # write the number of control points in a line
+    f.write(str(len(control_x))+'\n\n')
+
+    # write the knot vector in a line, each value rounded to 4 decimal places
+    for i in range(len(knot_vector)):
+        f.write(str(round(knot_vector[i], 3))+' ')
+    f.write('\n\n')
+
+    # write the control points, each point in a line
+    for i in range(len(control_x)):
+        f.write(str(round(control_x[i], 3))+' '+str(round(control_y[i], 3))+'\n')

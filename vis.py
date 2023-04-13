@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from basis import *
 
-file = "test.txt"
+file = "curve_whirlpool.txt"
 
 # read the file at path
 with open(file, 'r') as f:
@@ -14,7 +14,7 @@ with open(file, 'r') as f:
         if lines[i] != '\n':
             knot_vector = []
             for k in lines[i].split(' '):
-                if k != '':
+                if k != '' and k != '\n':
                     knot_vector.append(float(k))
             break
     # find the start line of the data points
@@ -36,9 +36,10 @@ for i in range(len(u)):
         y[i] += control_points[j][1] * B(u[i], degree, j, knot_vector)
 
 # visualize the control points
-plt.plot([p[0] for p in control_points], [p[1] for p in control_points], 'ro')
+plt.plot([p[0] for p in control_points], [p[1] for p in control_points], 'gx')
 # connect the control points
 for i in range(len(control_points)-1):
-    plt.plot([control_points[i][0], control_points[i+1][0]], [control_points[i][1], control_points[i+1][1]], 'r-')
-plt.plot(x, y)
+    plt.plot([control_points[i][0], control_points[i+1][0]], [control_points[i][1], control_points[i+1][1]], 'g--')
+plt.plot(x, y, 'r')
+plt.axis('equal')
 plt.show()
