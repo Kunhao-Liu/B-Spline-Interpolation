@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from basis import B
+from basis import *
 
 file = "eg1d5.txt"
 
@@ -41,4 +41,4 @@ plt.plot([p[0] for p in control_points], [p[1] for p in control_points], 'ro')
 for i in range(len(control_points)-1):
     plt.plot([control_points[i][0], control_points[i+1][0]], [control_points[i][1], control_points[i+1][1]], 'r-')
 plt.plot(x, y)
-plt.show()
+# plt.show()

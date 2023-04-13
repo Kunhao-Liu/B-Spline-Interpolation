@@ -1,5 +1,5 @@
 import math
-from basis import B
+from basis import *
 
 degree = 3 # degree of the B-spline curve
 
@@ -31,3 +31,13 @@ for i in range(num_data_points):
     print('i =', i)
     for j in range(len(knot_vector)-degree-1):
         print('N3({},{}) = {}'.format(knot_vector[i+degree], j, B(knot_vector[i+degree], degree, j, knot_vector)))
+
+# print boundary conditions
+print(  B(knot_vector[degree], degree, 0, knot_vector, derivative_order=2),
+        B(knot_vector[degree], degree, 1, knot_vector, derivative_order=2),
+        B(knot_vector[degree], degree, 2, knot_vector, derivative_order=2), '\n')
+
+
+print(  B(knot_vector[-1-degree], degree, num_data_points-1, knot_vector, derivative_order=2),
+        B(knot_vector[-1-degree], degree, num_data_points, knot_vector, derivative_order=2),
+        B(knot_vector[-1-degree], degree, num_data_points+1, knot_vector, derivative_order=2),)
