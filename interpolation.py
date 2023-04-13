@@ -1,4 +1,5 @@
 import math
+import numpy as np
 from basis import *
 
 degree = 3 # degree of the B-spline curve
@@ -27,17 +28,59 @@ for i in range(degree):
 
 print('knot vector:', knot_vector)
 
+
+A = np.zeros((num_data_points, num_data_points+2))
 for i in range(num_data_points):
-    print('i =', i)
-    for j in range(len(knot_vector)-degree-1):
-        print('N3({},{}) = {}'.format(knot_vector[i+degree], j, B(knot_vector[i+degree], degree, j, knot_vector)))
+    for j in range(num_data_points+2):
+        A[i][j] = B(knot_vector[i+degree], degree, j, knot_vector)
+        
+# insert the boundary conditions
+con1 = np.zeros(num_data_points+2)
+con2 = np.zeros(num_data_points+2)
+for i in range(num_data_points+2):
+    con1[i] = B(knot_vector[degree], degree, i, knot_vector, derivative_order=2)
+    con2[i] = B(knot_vector[-1-degree], degree, i, knot_vector, derivative_order=2)
 
-# print boundary conditions
-print(  B(knot_vector[degree], degree, 0, knot_vector, derivative_order=2),
-        B(knot_vector[degree], degree, 1, knot_vector, derivative_order=2),
-        B(knot_vector[degree], degree, 2, knot_vector, derivative_order=2), '\n')
+# insert con1 to the scend row of A
+A = np.insert(A, 1, con1, axis=0)
+# insert con2 to the scend to last row of A
+A = np.insert(A, -1, con2, axis=0)
+
+# convert x-coordinates and y-coordinates to two numpy vectors
+data_x = np.array([p[0] for p in data_points])
+data_y = np.array([p[1] for p in data_points])
+# insert 0 in the start and end of x and y
+data_x = np.insert(data_x, 0, 0)
+data_x = np.insert(data_x, -1, 0)
+data_y = np.insert(data_y, 0, 0)
+data_y = np.insert(data_y, -1, 0)
+
+# solve the linear system
+control_x = np.linalg.solve(A, data_x)
+control_y = np.linalg.solve(A, data_y)
 
 
-print(  B(knot_vector[-1-degree], degree, num_data_points-1, knot_vector, derivative_order=2),
-        B(knot_vector[-1-degree], degree, num_data_points, knot_vector, derivative_order=2),
-        B(knot_vector[-1-degree], degree, num_data_points+1, knot_vector, derivative_order=2),)
+# visualize the b-spline curve
+u = np.linspace(knot_vector[degree], knot_vector[-degree-1], 100)
+x = [0. for i in range(len(u))]
+y = [0. for i in range(len(u))]
+for i in range(len(u)):
+    for j in range(len(control_x)):
+        x[i] += control_x[j] * B(u[i], degree, j, knot_vector)
+        y[i] += control_y[j] * B(u[i], degree, j, knot_vector)
+        
+import matplotlib.pyplot as plt
+plt.plot(x, y, 'r')
+
+# plot the data points
+for i in range(len(data_points)):
+    plt.plot(data_points[i][0], data_points[i][1], 'bo')
+
+# plot the control points
+for i in range(len(control_x)):
+    plt.plot(control_x[i], control_y[i], 'gx')
+# connect the control points
+for i in range(len(control_x)-1):
+    plt.plot([control_x[i], control_x[i+1]], [control_y[i], control_y[i+1]], 'g--')
+
+plt.show()
