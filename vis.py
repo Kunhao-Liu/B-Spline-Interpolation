@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from basis import *
 
-file = "curve_whirlpool.txt"
+file = "input_files/curve_input.txt"
 
 # read the file at path
 with open(file, 'r') as f:

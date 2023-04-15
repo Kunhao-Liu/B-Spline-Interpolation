@@ -4,7 +4,7 @@ from basis import *
 
 degree = 3 # degree of the B-spline curve
 
-file_name = 'whirlpool.txt'
+file_name = 'input_files/input.txt'
 with open(file_name, 'r') as f:
     lines = f.readlines()
 
@@ -46,6 +46,10 @@ for i in range(num_data_points+2):
 A = np.insert(A, 1, con1, axis=0)
 # insert con2 to the scend to last row of A
 A = np.insert(A, -1, con2, axis=0)
+det = np.linalg.det(A)
+# Print the result
+print(det)
+print(A)
 
 # convert x-coordinates and y-coordinates to two numpy vectors
 data_x = np.array([p[0] for p in data_points])
