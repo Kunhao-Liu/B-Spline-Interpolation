@@ -16,6 +16,8 @@ def b_spline_interpolation(data_points, degree=3, plot=False, write_to_file=Fals
     for i in range(1, len(data_points)):
         knot_vector.append(knot_vector[i-1] + math.sqrt((data_points[i][0] - data_points[i-1][0])**2 + (data_points[i][1] - data_points[i-1][1])**2)/total_distance)
 
+    # knot_vector = np.linspace(0, 1, num_data_points, endpoint=True).tolist()
+
     # append three 0 in the start and two 1 in the end of the knot vector
     for i in range(degree):
         knot_vector.insert(0, 0.)

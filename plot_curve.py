@@ -31,12 +31,13 @@ if plot_curve:
 
 if cubic_polynomial:
     # sample points from the curve
-    num_points = 20
-    # u = np.linspace(0, 1, num_points, endpoint=True)
+    num_points = 10
+    u = np.linspace(0, 1, num_points, endpoint=True)
     # u = np.random.uniform(low=0, high=1, size=num_points)
-    u = np.random.normal(0, 1, num_points)
+    # u = np.clip(np.random.normal(0.5, 0.2, num_points), 0, 1) 
 
     u.sort()
+    print(u)
 
     x = np.array([[x_u(u_i)] for u_i in u]) 
     y = np.array([[y_u(u_i)] for u_i in u]) 
@@ -85,10 +86,12 @@ if b_spline:
     degree = 3
 
     # sample points from the curve
-    num_points = 20
-    # u = np.linspace(0, 1, num_points, endpoint=True)
-    u = np.random.uniform(low=0, high=1, size=num_points)
-    # u = np.random.normal(0, 1, num_points)
+    num_points = 10
+    u = np.linspace(0, 1, num_points, endpoint=True)
+    # u = np.random.uniform(low=0, high=1, size=num_points)
+    # u = np.clip(np.random.normal(0.5, 0.2, num_points), 0, 1) 
+    # u = np.insert(u, 0, 0)
+    # u = np.insert(u, -1, 1)
 
     u.sort()
 
@@ -100,7 +103,6 @@ if b_spline:
     # get the b-spline curve
     control_x, control_y, knot_vector = b_spline_interpolation(data_points)
 
-
     # visualize the b-spline curve
     u = np.linspace(knot_vector[degree], knot_vector[-degree-1], 200)
     x = [0. for i in range(len(u))]
@@ -110,8 +112,9 @@ if b_spline:
             x[i] += control_x[j] * B(u[i], degree, j, knot_vector)
             y[i] += control_y[j] * B(u[i], degree, j, knot_vector)
 
-    plt.title(f'Randomly Sample {num_points} Points from a Uniform Distribution')
+    plt.title(f'Randomly Sample {num_points} Points from a Normal Distribution')
     # plt.title(f'Unifomly Sample {num_points} Points')
+    # plt.title(f'Uniform Parameterization')
     plt.xlabel('x')
     plt.ylabel('y')
     plt.plot(x, y, 'r', label='cubic B-spline curve')
